@@ -83,39 +83,51 @@ void printGrid(int rowCount, int colCount)
 
 bool canPlace(int inRow, int inCol)
 {
-    for (int checkCol = 0; checkCol < inCol; checkCol++)
+
+    //check the row
+    for(int colCheck = 0; colCheck < inCol; colCheck++)
     {
-        if (rooks[inRow][checkCol] == 'R')
+        if(rooks[inRow][colCheck] == 'R')
         {
             return false;
         }
+
     }
     return true;
+    
 }
 
 bool solveBoard(int colForNewRook)
 {
+    //this uses the text file to set how many columns we have available
+    actualSize = row;
+
     if (colForNewRook >= actualSize)
     {
         return true;
+
     }
 
-    for (int rowNumber = 0; rowNumber < actualSize; rowNumber++)
-    {
-        if (canPlace(rowNumber, colForNewRook))
-        {
-            rooks[rowNumber][colForNewRook] = 'R';
 
-            if (solveBoard(colForNewRook + 1))
+    for(int rowNum = 0; rowNum < actualSize; rowNum++)
+    {
+        if(canPlace(rowNum, colForNewRook))
+        {
+            if(rooks[rowNum][colForNewRook] != '#')
+            {
+                rooks[rowNum][colForNewRook] = 'R';
+            }
+            //if there is a next column, continue on.
+            if(solveBoard(colForNewRook + 1))
             {
                 return true;
             }
 
-            rooks[rowNumber][colForNewRook] = ' ';
+            rooks[rowNum][colForNewRook] = rooks[rowNum][colForNewRook];
         }
     }
 
-    return false;
+return false;
 }
 
 
@@ -131,14 +143,23 @@ int main(int argc, char *argv[])
     //print out the board from the file selected
 	printGrid(row, col);
 
-    //ask user for the number of rooks they want to place
+        //ask user for the number of rooks they want to place
     cout << "How many rooks would you like to place? ";
     cin >> numRooks;
 
-    //check to see if you can place that many rooks without them attacking eachother
-    solveBoard(0);
 
-    printGrid(row, col);
+
+    //check to see if you can place that many rooks without them attacking eachother
+    //solveBoard(0);
+    if(solveBoard(0))
+    {
+        cout << "The solved board is: " << endl;
+        printGrid(row,col);
+    }
+    else
+    { 
+        cout << "No Solution!!!" << endl;
+    }
 
     
 	return 0;
