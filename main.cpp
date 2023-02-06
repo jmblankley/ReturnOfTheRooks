@@ -78,45 +78,73 @@ void printGrid(int rowCount, int colCount)
     }
 }
 
-// basically just looks to see if there is another 'R' in the row
-// needs to check what happens when there is a '#'
 bool canPlace(int inRow, int inCol)
 {
-
-    // check the row
-    for (int colCheck = 0; colCheck < inCol; colCheck++)
+    // check if the space is empty
+    if (rooks[inRow][inCol] == 'R')
     {
-        if (rooks[inRow][colCheck] == 'R')
+        return false;
+    }
+    if (rooks[inRow][inCol] == '.')
+    {
+        // check back in column
+        for (int colCheck = inCol - 1; colCheck == 0; colCheck--)
         {
-            return false;
+            if (rooks[inRow][colCheck] == 'R')
+            {
+                return false;
+            }
+            if (rooks[inRow][colCheck] == '#')
+            {
+                return true;
+            }
+            else
+            {
+                return true;
+            }
         }
-        if (rooks[inRow][colCheck] == '#')
+        // check back in row
+        for (int rowCheck = inRow - 1; rowCheck == 0; rowCheck--)
         {
+            if (rooks[rowCheck][inCol] == 'R')
+            {
+                return false;
+            }
+            if (rooks[rowCheck][inCol] == '#')
+            {
+                return true;
+            }
         }
     }
+
     return true;
 }
 
-bool solveBoard(int colForNewRook)
+// think about paraments , how many rooks to place
+bool solveBoard(int colForNewRook, int nRooks)
 {
-    // this uses the text file to set how many columns we have available
-    actualSize = row;
 
-    if (colForNewRook >= actualSize)
+    // this uses the text file to set how many columns we have available
+    actualSize = col;
+
+    /*if (colForNewRook >= actualSize)
     {
         return true;
-    }
+    }*/
 
     for (int rowNum = 0; rowNum < actualSize; rowNum++)
     {
         if (canPlace(rowNum, colForNewRook))
         {
-            if (rooks[rowNum][colForNewRook] != '#')
+            rooks[rowNum][colForNewRook] = 'R';
+            numRooks--;
+            // if you run out of rooks, return to main as a solved board
+            if (numRooks == 0)
             {
-                rooks[rowNum][colForNewRook] = 'R';
+                return true;
             }
             // if there is a next column, continue on.
-            if (solveBoard(colForNewRook + 1))
+            if (solveBoard(colForNewRook + 1, numRooks))
             {
                 return true;
             }
@@ -138,7 +166,7 @@ int main(int argc, char *argv[])
     fileRead();
 
     // print out the board from the file selected
-    printGrid(row, col);
+    // printGrid(row, col);
 
     // ask user for the number of rooks they want to place
     cout << "How many rooks would you like to place? ";
@@ -146,7 +174,8 @@ int main(int argc, char *argv[])
 
     // check to see if you can place that many rooks without them attacking eachother
     // solveBoard(0);
-    if (solveBoard(0))
+
+    if (solveBoard(0, numRooks))
     {
         cout << "The solved board is: " << endl;
         printGrid(row, col);
@@ -155,6 +184,5 @@ int main(int argc, char *argv[])
     {
         cout << "No Solution!!!" << endl;
     }
-
     return 0;
 }
