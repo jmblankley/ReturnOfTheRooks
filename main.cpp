@@ -3,12 +3,12 @@
 #define MAXSIZE 100
 using namespace std;
 
-char rooks[MAXSIZE][MAXSIZE]; //initializing a 2d array that will be no larger that 100x100
+char rooks[MAXSIZE][MAXSIZE]; // initializing a 2d array that will be no larger that 100x100
 int row, col;
 int numRooks;
 int actualSize;
 
-//initialize a board
+// initialize a board
 void initBoard()
 {
     for (int rowCount = 0; rowCount < actualSize; rowCount++)
@@ -17,7 +17,7 @@ void initBoard()
 }
 
 // this function takes in our ifstream and stores it in our 2d array
-void readGrid(int rowCount, int colCount, ifstream& input)
+void readGrid(int rowCount, int colCount, ifstream &input)
 {
     for (int r = 0; r < rowCount; r++)
     {
@@ -30,9 +30,8 @@ void readGrid(int rowCount, int colCount, ifstream& input)
     }
 }
 
-
-//this function takes user input for a file name, reads through it and takes the integers in the file storing them in row and col
-//to be used in construction of grid
+// this function takes user input for a file name, reads through it and takes the integers in the file storing them in row and col
+// to be used in construction of grid
 void fileRead()
 {
     // ask user for input
@@ -65,8 +64,6 @@ void fileRead()
     readGrid(row, col, reader);
 }
 
-
-
 // prints out our empty grid
 // used to test if our input was getting put into the grid
 void printGrid(int rowCount, int colCount)
@@ -81,86 +78,83 @@ void printGrid(int rowCount, int colCount)
     }
 }
 
+// basically just looks to see if there is another 'R' in the row
+// needs to check what happens when there is a '#'
 bool canPlace(int inRow, int inCol)
 {
 
-    //check the row
-    for(int colCheck = 0; colCheck < inCol; colCheck++)
+    // check the row
+    for (int colCheck = 0; colCheck < inCol; colCheck++)
     {
-        if(rooks[inRow][colCheck] == 'R')
+        if (rooks[inRow][colCheck] == 'R')
         {
             return false;
         }
-
+        if (rooks[inRow][colCheck] == '#')
+        {
+        }
     }
     return true;
-    
 }
 
 bool solveBoard(int colForNewRook)
 {
-    //this uses the text file to set how many columns we have available
+    // this uses the text file to set how many columns we have available
     actualSize = row;
 
     if (colForNewRook >= actualSize)
     {
         return true;
-
     }
 
-
-    for(int rowNum = 0; rowNum < actualSize; rowNum++)
+    for (int rowNum = 0; rowNum < actualSize; rowNum++)
     {
-        if(canPlace(rowNum, colForNewRook))
+        if (canPlace(rowNum, colForNewRook))
         {
-            if(rooks[rowNum][colForNewRook] != '#')
+            if (rooks[rowNum][colForNewRook] != '#')
             {
                 rooks[rowNum][colForNewRook] = 'R';
             }
-            //if there is a next column, continue on.
-            if(solveBoard(colForNewRook + 1))
+            // if there is a next column, continue on.
+            if (solveBoard(colForNewRook + 1))
             {
                 return true;
             }
 
+            // if you don't place a rook put back what was there before
             rooks[rowNum][colForNewRook] = rooks[rowNum][colForNewRook];
         }
     }
 
-return false;
+    return false;
 }
-
-
 
 int main(int argc, char *argv[])
 {
-    //initialize a board
+    // initialize a board
     initBoard();
 
-    //ask for input filename
+    // ask for input filename
     fileRead();
 
-    //print out the board from the file selected
-	printGrid(row, col);
+    // print out the board from the file selected
+    printGrid(row, col);
 
-        //ask user for the number of rooks they want to place
+    // ask user for the number of rooks they want to place
     cout << "How many rooks would you like to place? ";
     cin >> numRooks;
 
-
-
-    //check to see if you can place that many rooks without them attacking eachother
-    //solveBoard(0);
-    if(solveBoard(0))
+    // check to see if you can place that many rooks without them attacking eachother
+    // solveBoard(0);
+    if (solveBoard(0))
     {
         cout << "The solved board is: " << endl;
-        printGrid(row,col);
+        printGrid(row, col);
     }
     else
-    { 
+    {
         cout << "No Solution!!!" << endl;
     }
 
-    
-	return 0;
+    return 0;
 }
