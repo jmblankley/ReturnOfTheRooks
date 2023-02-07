@@ -81,39 +81,45 @@ void printGrid(int rowCount, int colCount)
 bool canPlace(int inRow, int inCol)
 {
     // check if the space is empty
-    if (rooks[inRow][inCol] == 'R')
+    if(rooks[inRow][inCol] == 'R' || rooks[inRow][inCol] == '#')
     {
         return false;
     }
-    if (rooks[inRow][inCol] == '.')
+    if(rooks[inRow][inCol] == '.')
     {
         // check back in column
-        for (int colCheck = inCol - 1; colCheck == 0; colCheck--)
+        for(int colN = inCol - 1; colN < 0; colN--)
         {
-            if (rooks[inRow][colCheck] == 'R')
-            {
-                return false;
-            }
-            if (rooks[inRow][colCheck] == '#')
+            if(rooks[inRow][colN] == '#')
             {
                 return true;
+            }
+            if(rooks[inRow][colN] == 'R')
+            {
+                return false;
             }
             else
             {
                 return true;
             }
+
         }
         // check back in row
-        for (int rowCheck = inRow - 1; rowCheck == 0; rowCheck--)
+        for(int rowN = inRow - 1; rowN < 0; rowN--)
         {
-            if (rooks[rowCheck][inCol] == 'R')
-            {
-                return false;
-            }
-            if (rooks[rowCheck][inCol] == '#')
+            if(rooks[rowN][inCol] == '#')
             {
                 return true;
             }
+            if(rooks[rowN][inCol] == 'R')
+            {
+                return false;
+            }
+                        else
+            {
+                return true;
+            }
+
         }
     }
 
@@ -127,35 +133,32 @@ bool solveBoard(int colForNewRook, int nRooks)
     // this uses the text file to set how many columns we have available
     actualSize = col;
 
-    /*if (colForNewRook >= actualSize)
+    if (nRooks <= 0)
     {
         return true;
-    }*/
-
-    for (int rowNum = 0; rowNum < actualSize; rowNum++)
+    }
+    for(int rowNum = 0; rowNum < actualSize; rowNum++)
     {
-        if (canPlace(rowNum, colForNewRook))
+        if(canPlace(rowNum, colForNewRook))
         {
             rooks[rowNum][colForNewRook] = 'R';
-            numRooks--;
-            // if you run out of rooks, return to main as a solved board
-            if (numRooks == 0)
-            {
-                return true;
-            }
-            // if there is a next column, continue on.
-            if (solveBoard(colForNewRook + 1, numRooks))
-            {
-                return true;
-            }
+            nRooks--;
 
-            // if you don't place a rook put back what was there before
-            rooks[rowNum][colForNewRook] = rooks[rowNum][colForNewRook];
         }
-    }
+        if(solveBoard(colForNewRook + 1, nRooks))
+        {
+            return true;
+        }
+
+        // if you don't place a rook put back what was there before
+        rooks[rowNum][colForNewRook] = rooks[rowNum][colForNewRook];
+    }   
 
     return false;
+
 }
+
+    
 
 int main(int argc, char *argv[])
 {
@@ -166,15 +169,14 @@ int main(int argc, char *argv[])
     fileRead();
 
     // print out the board from the file selected
-    // printGrid(row, col);
+    printGrid(row, col);
 
     // ask user for the number of rooks they want to place
     cout << "How many rooks would you like to place? ";
     cin >> numRooks;
 
+    
     // check to see if you can place that many rooks without them attacking eachother
-    // solveBoard(0);
-
     if (solveBoard(0, numRooks))
     {
         cout << "The solved board is: " << endl;
