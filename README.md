@@ -22,3 +22,9 @@ Stopping Point: Got most of canPlace() and solveBoard() started. Need to work ou
 Worked on canPlace() and solveBoard() functions. Got some 'R's populated onto the board but not the right number. Need to work on recursion to get it to place them properly. I am close though, hopefully gonna get this figure out next session.
 
 Stopping Point: Need to get the right number of 'R's populating onto the board in the proper spaces.
+
+### Day 3 (2/7/2023)
+
+Had to basically scrap all of canPlace() and solveBoard(). Started the rebuild of these functions, getting close to where I need them, just some slight tweaks and they will be working.
+
+Stopping Point: Need to get canPlace() properly checking for 'R's and '#'s.
