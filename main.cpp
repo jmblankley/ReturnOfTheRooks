@@ -1,190 +1,155 @@
 #include <iostream>
 #include <fstream>
-#define MAXSIZE 100
 using namespace std;
+#define SIZE 100
 
-char rooks[MAXSIZE][MAXSIZE]; // initializing a 2d array that will be no larger that 100x100
+
+char input;
+char rooks[SIZE][SIZE];
 int row, col;
-int numRooks;
-int actualSize;
+int nRooks;
 
-// initialize a board
-void initBoard()
-{
-    for (int rowCount = 0; rowCount < actualSize; rowCount++)
-        for (int colCount = 0; colCount < actualSize; colCount++)
-            rooks[rowCount][colCount] = ' ';
-}
 
-// this function takes in our ifstream and stores it in our 2d array
-void readGrid(int rowCount, int colCount, ifstream &input)
-{
-    for (int r = 0; r < rowCount; r++)
+
+//iterate through the grid in the file
+//print out each element
+void readFile(ifstream &input, int rowCount, int colCount)
+{   
+    for(int row = 0; row < rowCount; row++)
     {
-        for (int c = 0; c < colCount; c++)
+        for(int col = 0; col < colCount; col++)
         {
             char var;
             input >> var;
-            rooks[r][c] = var;
+            rooks[row][col] = var;
         }
     }
 }
 
-// this function takes user input for a file name, reads through it and takes the integers in the file storing them in row and col
-// to be used in construction of grid
-void fileRead()
-{
-    // ask user for input
-    string fname;
-    cout << "Please enter the name of an input file: ";
-    cin >> fname;
-
-    // uses fstream to read the filename given by the user and store
-    ifstream reader(fname);
-
-    // next two if statements handles errors
-    // returns error if file is un-openable
-    if (!reader)
-    {
-
-        cerr << "Could not open \"" << fname << '"' << endl;
-        return;
-    }
-    // returns error if nothing is in the file
-    if (!reader)
-    {
-        cerr << "File had no data in it!!!" << endl;
-        return;
-    }
-
-    // takes the first two values of our text file and stores them in variables to construct the 2d array
-    reader >> row >> col;
-
-    // call this function, pass it our row and col size taken from input file as well as what ifstream we need to read
-    readGrid(row, col, reader);
-}
-
-// prints out our empty grid
-// used to test if our input was getting put into the grid
+//take in an input file from user
+//store the first two ints in vars row and col
+//iterate through the grid in the file
 void printGrid(int rowCount, int colCount)
 {
-    for (int r = 0; r < rowCount; r++)
+    for(int row = 0; row < rowCount; row++)
     {
-        for (int c = 0; c < colCount; c++)
+        for(int col = 0; col < colCount; col++)
         {
-            cout << rooks[r][c];
+            cout << rooks[row][col];
         }
         cout << endl;
     }
 }
 
-bool canPlace(int inRow, int inCol)
+
+//starting with trying at [0,0] check behind in the row and behind in the col
+//if there are no 'R' in the row or col return true
+bool canPlace(int currentRow, int currentCol)
 {
-    // check if the space is empty
-    if(rooks[inRow][inCol] == 'R' || rooks[inRow][inCol] == '#')
+    if(rooks[currentRow][currentCol] == 'R' || rooks[currentRow][currentCol] == '#')
     {
         return false;
     }
-    if(rooks[inRow][inCol] == '.')
+
+    if(rooks[currentRow][currentCol] == '.')
     {
-        // check back in column
-        for(int colN = inCol - 1; colN < 0; colN--)
+        for(int colCheck = currentCol; colCheck > 0; colCheck--)
         {
-            if(rooks[inRow][colN] == '#')
+            if(rooks[currentRow][colCheck] == '#')
             {
                 return true;
             }
-            if(rooks[inRow][colN] == 'R')
+            if(rooks[currentRow][colCheck] == 'R')
             {
                 return false;
             }
-            else
-            {
-                return true;
-            }
-
         }
-        // check back in row
-        for(int rowN = inRow - 1; rowN < 0; rowN--)
+        
+        for(int rowCheck = currentRow; rowCheck > 0; rowCheck--)
         {
-            if(rooks[rowN][inCol] == '#')
+            if(rooks[rowCheck][currentCol] == '#')
             {
                 return true;
             }
-            if(rooks[rowN][inCol] == 'R')
+            if(rooks[rowCheck][currentCol] == 'R')
             {
                 return false;
             }
-                        else
-            {
-                return true;
-            }
-
         }
+
+        
     }
 
     return true;
 }
 
-// think about paraments , how many rooks to place
-bool solveBoard(int colForNewRook, int nRooks)
+//if you can place a 'R' place it
+//move on to the next element and check if you can place another 'R'
+bool solveBoard(int colForNextRook, int numRooks)
 {
+    int maxRows = row;
 
-    // this uses the text file to set how many columns we have available
-    actualSize = col;
-
-    if (nRooks <= 0)
+    if (numRooks <= 0)
     {
         return true;
     }
-    for(int rowNum = 0; rowNum < actualSize; rowNum++)
+
+    for(int inRow = 0; inRow < maxRows; inRow++)
     {
-        if(canPlace(rowNum, colForNewRook))
+        if(canPlace(inRow, colForNextRook))
         {
-            rooks[rowNum][colForNewRook] = 'R';
-            nRooks--;
+            rooks[inRow][colForNextRook] = 'R';
+            numRooks--;
+
+            //need to have some sort of way to break out and tell main that
+            //solve board is true so it will print out the board
 
         }
-        if(solveBoard(colForNewRook + 1, nRooks))
-        {
-            return true;
-        }
-
-        // if you don't place a rook put back what was there before
-        rooks[rowNum][colForNewRook] = rooks[rowNum][colForNewRook];
-    }   
-
+        //if you can't place anything put back what was there before
+        rooks[inRow][colForNextRook] = rooks[inRow][colForNextRook];
+    }
     return false;
-
 }
 
-    
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
-    // initialize a board
-    initBoard();
+    
+    string fname;
+    cout << "Please enter the name of an input file: " << fname;
+    cin >> fname;
 
-    // ask for input filename
-    fileRead();
+    ifstream reader(fname);
 
-    // print out the board from the file selected
+    if (!reader)
+    {
+
+        cerr << "Could not open \"" << fname << '"' << endl;
+        return 1;
+    }
+    // returns error if nothing is in the file
+    if (!reader)
+    {
+        cerr << "File had no data in it!!!" << endl;
+        return 2;
+    }
+
+    reader >> row >> col;
+
+    readFile(reader, row, col);
+
     printGrid(row, col);
 
-    // ask user for the number of rooks they want to place
-    cout << "How many rooks would you like to place? ";
-    cin >> numRooks;
+    cout << "Please enter the number of rooks you would like to place: ";
+    cin >> nRooks;
 
-    
-    // check to see if you can place that many rooks without them attacking eachother
-    if (solveBoard(0, numRooks))
+
+    if(solveBoard(0, nRooks))
     {
-        cout << "The solved board is: " << endl;
         printGrid(row, col);
     }
-    else
-    {
-        cout << "No Solution!!!" << endl;
-    }
+
+
+
     return 0;
 }
