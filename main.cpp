@@ -100,7 +100,8 @@ bool solveBoard(int colForNextRook, int numRooks)
         {
             rooks[inRow][colForNextRook] = 'R';
             numRooks--;
-
+            inRow++;
+            return true;
             //need to have some sort of way to break out and tell main that
             //solve board is true so it will print out the board
 
