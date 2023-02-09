@@ -2,6 +2,7 @@
 #include <fstream>
 using namespace std;
 #define SIZE 100
+#define EMPTY '.'
 
 
 char input;
@@ -51,36 +52,40 @@ bool canPlace(int currentRow, int currentCol)
         return false;
     }
 
-    if(rooks[currentRow][currentCol] == '.')
+    if(rooks[currentRow][currentCol] == EMPTY)
     {
-        for(int colCheck = currentCol; colCheck > 0; colCheck--)
+        //look through every col in the row behind your current location
+        for(int colCheck = currentCol; colCheck >= 0; colCheck--)
         {
-            if(rooks[currentRow][colCheck] == '#')
-            {
-                return true;
-            }
+            //if you run into another rook stop looking here because you cant place it
             if(rooks[currentRow][colCheck] == 'R')
             {
                 return false;
             }
-        }
-        
-        for(int rowCheck = currentRow; rowCheck > 0; rowCheck--)
-        {
-            if(rooks[rowCheck][currentCol] == '#')
+            //if you run into a block, then you are good to place in the horizontal (or if you run of the array and dont run into anyting)
+            if(rooks[currentRow][colCheck] == '#')
             {
                 return true;
             }
+        }
+        for(int rowCheck = currentRow - 1; rowCheck > 0; rowCheck--)
+        {
+            //if you run into a rook here stop looking
             if(rooks[rowCheck][currentCol] == 'R')
             {
                 return false;
             }
+            //if you run into a block (or off the page without hitting a rook) then you can place a rook!!!
+            if(rooks[rowCheck][currentCol] == '#')
+            {
+                return true;
+            }
         }
 
-        
     }
 
     return true;
+
 }
 
 //if you can place a 'R' place it
@@ -89,7 +94,7 @@ bool solveBoard(int colForNextRook, int numRooks)
 {
     int maxRows = row;
 
-    if (numRooks <= 0)
+    if (numRooks == 0)
     {
         return true;
     }
@@ -100,15 +105,15 @@ bool solveBoard(int colForNextRook, int numRooks)
         {
             rooks[inRow][colForNextRook] = 'R';
             numRooks--;
-            inRow++;
-            return true;
-            //need to have some sort of way to break out and tell main that
-            //solve board is true so it will print out the board
+            //need to have some sort of way to return to main and tell main that
+            //solve board is true so it will print out the board]
 
         }
+    
         //if you can't place anything put back what was there before
         rooks[inRow][colForNextRook] = rooks[inRow][colForNextRook];
-    }
+    }            
+
     return false;
 }
 
@@ -147,8 +152,11 @@ int main(int argc, char* argv[])
 
     if(solveBoard(0, nRooks))
     {
-        printGrid(row, col);
+            printGrid(row, col);
     }
+
+
+
 
 
 
