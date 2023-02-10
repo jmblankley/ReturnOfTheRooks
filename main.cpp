@@ -55,6 +55,28 @@ bool canPlace(int currentRow, int currentCol)
     }
     if (rooks[currentRow][currentCol] == EMPTY)
     {
+        for (int rowCheck = currentRow - 1; rowCheck >= 0; rowCheck--)
+        {
+            if (rooks[rowCheck][currentCol] == '#')
+            {
+                break;
+            }
+            if (rooks[rowCheck][currentCol] == 'R')
+            {
+                return false;
+            }
+        }
+        for (int colCheck = currentCol - 1; colCheck >= 0; colCheck--)
+        {
+            if (rooks[currentRow][colCheck] == '#')
+            {
+                return true;
+            }
+            if (rooks[currentRow][colCheck] == 'R')
+            {
+                return false;
+            }
+        }
     }
 
     // if there are no other rooks
@@ -74,22 +96,27 @@ bool solveBoard(int numRooks, int rowCur, int colCur)
         return true;
     }
     // LOOP OVER ALL POSSIBLE NEXT MOVES!!!
-    for (int rowCheck = 0; rowCheck < row; rowCheck++)
+    for (int rowCheck = rowCur; rowCheck < row; rowCheck++)
     {
         for (int colCheck = 0; colCheck < col; colCheck++)
         {
-            if (canPlace(rowCur, colCur))
+            if (canPlace(rowCheck, colCheck))
             {
-                rooks[rowCur][colCur] = 'R';
-
-                if (solveBoard(numRooks - 1, rowCur + 1, colCur))
+                rooks[rowCheck][colCheck] = 'R';
+                while (colCheck <= col)
                 {
-                    return true;
+                    if (solveBoard(numRooks - 1, rowCheck, colCheck + 1))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        rooks[rowCheck][colCheck] = rooks[rowCheck][colCheck];
+                    }
                 }
             }
         }
     }
-    // might be a combination of loops to go over EVERY POSSIBLE NEXT MOVE!!
 
     return false;
 }
@@ -129,7 +156,7 @@ int main(int argc, char *argv[])
         cout << "Thanks for playing!" << endl;
         return 0;
     }
-
+    while(numRooks >= 0 || )
     if (solveBoard(nRooks, 0, 0))
     {
         printGrid(row, col);
