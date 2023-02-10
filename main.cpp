@@ -45,16 +45,19 @@ bool canPlace(int currentRow, int currentCol)
 {
     // check if the spot you are looking is empty
     // if it isnt
-    if (rooks[currentRow][currentCol] == 'R' || rooks[currentRow][currentCol] == '#')
+    if (rooks[currentRow][currentCol] == 'R')
     {
         return false;
     }
-
-    // if it is
+    if (rooks[currentRow][currentCol] == '#')
+    {
+        return false;
+    }
     if (rooks[currentRow][currentCol] == EMPTY)
     {
     }
 
+    // if there are no other rooks
     return true;
 }
 
@@ -62,27 +65,27 @@ bool canPlace(int currentRow, int currentCol)
 // move on to the next element and check if you can place another 'R'
 
 // THINK VERY VERY VERY HARD ABOUT WHAT PARAMETERS!!!!!!!!!!!!!
-bool solveBoard(int numRooks, int currentRow, int currentCol)
+bool solveBoard(int numRooks, int rowCur, int colCur)
 {
     // WE NEED A BASE CASE!
     // looks at parameteres-done yet?
-    if (numRooks <= 0)
+    if (numRooks == 0)
     {
         return true;
     }
     // LOOP OVER ALL POSSIBLE NEXT MOVES!!!
-    for (int rowCheck = currentRow; rowCheck <= row; row++)
+    for (int rowCheck = 0; rowCheck < row; rowCheck++)
     {
-        for (int colCheck = currentCol; colCheck <= col; col++)
+        for (int colCheck = 0; colCheck < col; colCheck++)
         {
-            if (canPlace(rowCheck, colCheck))
+            if (canPlace(rowCur, colCur))
             {
-                rooks[rowCheck][colCheck] = 'R';
-                if (solveBoard(numRooks - 1, rowCheck + 1, colCheck + 1))
+                rooks[rowCur][colCur] = 'R';
+
+                if (solveBoard(numRooks - 1, rowCur + 1, colCur))
                 {
                     return true;
                 }
-                rooks[rowCheck][colCheck] = rooks[rowCheck][colCheck];
             }
         }
     }
@@ -121,6 +124,11 @@ int main(int argc, char *argv[])
 
     cout << "Please enter the number of rooks you would like to place: ";
     cin >> nRooks;
+    if (nRooks == -1)
+    {
+        cout << "Thanks for playing!" << endl;
+        return 0;
+    }
 
     if (solveBoard(nRooks, 0, 0))
     {
