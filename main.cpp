@@ -46,7 +46,7 @@ void clearBoard(int rowCount, int colCount)
     {
         for(int colClear = 0; colClear < colCount; colClear++)
         {   
-            rooks[rowClear][colClear] = var;
+            rooks[rowClear][colClear] = ' ';
         }
     }
 }
@@ -105,6 +105,8 @@ bool solveBoard(int numRooks, int rowCur, int colCur)
         return true;
     }
     // LOOP OVER ALL POSSIBLE NEXT MOVES!!!
+    while(numRooks >= 0)
+    { 
     for (int rowCheck = rowCur; rowCheck < row; rowCheck++)
     {
         for (int colCheck = 0; colCheck < col; colCheck++)
@@ -124,10 +126,11 @@ bool solveBoard(int numRooks, int rowCur, int colCur)
                     }
                 }                    
             }
-
         }
         
     }
+    }
+    
 
     return false;
 }
@@ -163,29 +166,21 @@ int main(int argc, char *argv[])
 
     cout << "How many rooks would you like to place? ";
     cin >> nRooks;
-
+    if (nRooks == -1)
+            {
+                cout << "Thank you for using RookPlacer - hope to see you again soon!" << endl;
+                return 0;
+            }
     if (solveBoard(nRooks, 0, 0))
     {
         printGrid(row, col);
     }
-    clearBoard(row, col);
-    while (nRooks != -1)
+    /*if(!solveBoard(nRooks, 0, 0))
     {
-        cout << "How many rooks would you like to place (-1 to stop)?";
-        cin >> nRooks;
+        cout << "Could not place " << nRooks << " rooks." << endl;
+    }*/
+   
 
-        if (solveBoard(nRooks, 0, 0))
-        {
-            printGrid(row, col); 
-        }
-
-        clearBoard(row, col);
-    }
-    if (nRooks == -1)
-    {
-        cout << "Thank you for using RookPlacer - hope to see you again soon!" << endl;
-        return 0;
-    }
 
 
     return 0;
