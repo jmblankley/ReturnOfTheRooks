@@ -8,6 +8,7 @@ char input;
 char rooks[SIZE][SIZE];
 int row, col;
 int nRooks;
+int newRooks;
 
 // iterate through the grid in the file
 // print out each element
@@ -36,6 +37,17 @@ void printGrid(int rowCount, int colCount)
             cout << rooks[row][col];
         }
         cout << endl;
+    }
+}
+
+void clearBoard(int rowCount, int colCount)
+{
+    for(int rowClear = 0; rowClear < rowCount; rowClear++)
+    {
+        for(int colClear = 0; colClear < colCount; colClear++)
+        {   
+            rooks[rowClear][colClear] = var;
+        }
     }
 }
 
@@ -83,9 +95,6 @@ bool canPlace(int currentRow, int currentCol)
     return true;
 }
 
-// if you can place a 'R' place it
-// move on to the next element and check if you can place another 'R'
-
 // THINK VERY VERY VERY HARD ABOUT WHAT PARAMETERS!!!!!!!!!!!!!
 bool solveBoard(int numRooks, int rowCur, int colCur)
 {
@@ -113,9 +122,11 @@ bool solveBoard(int numRooks, int rowCur, int colCur)
                     {
                         rooks[rowCheck][colCheck] = rooks[rowCheck][colCheck];
                     }
-                }
+                }                    
             }
+
         }
+        
     }
 
     return false;
@@ -145,22 +156,37 @@ int main(int argc, char *argv[])
 
     reader >> row >> col;
 
+    
     readFile(reader, row, col);
-
     printGrid(row, col);
 
-    cout << "Please enter the number of rooks you would like to place: ";
+
+    cout << "How many rooks would you like to place? ";
     cin >> nRooks;
-    if (nRooks == -1)
-    {
-        cout << "Thanks for playing!" << endl;
-        return 0;
-    }
-    while(numRooks >= 0 || )
+
     if (solveBoard(nRooks, 0, 0))
     {
         printGrid(row, col);
     }
+    clearBoard(row, col);
+    while (nRooks != -1)
+    {
+        cout << "How many rooks would you like to place (-1 to stop)?";
+        cin >> nRooks;
+
+        if (solveBoard(nRooks, 0, 0))
+        {
+            printGrid(row, col); 
+        }
+
+        clearBoard(row, col);
+    }
+    if (nRooks == -1)
+    {
+        cout << "Thank you for using RookPlacer - hope to see you again soon!" << endl;
+        return 0;
+    }
+
 
     return 0;
 }
