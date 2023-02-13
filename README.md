@@ -28,3 +28,7 @@ Stopping Point: Need to get the right number of 'R's populating onto the board i
 Had to basically scrap all of canPlace() and solveBoard(). Started the rebuild of these functions, getting close to where I need them, just some slight tweaks and they will be working.
 
 Stopping Point: Need to get canPlace() properly checking for 'R's and '#'s.
+
+### Day 4 (2/13/2023)
+
+Finished project. Needed some small tweaks on solveBoard() to get it to work properly. Tested the program against 6 or 7 different text files and they are worked. 
